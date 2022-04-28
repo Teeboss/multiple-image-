@@ -7,12 +7,17 @@ if (isset($_POST['upload'])) {
   $id = time();
   $texts = $_POST['postbody'];
   $image = $_FILES['image']['name'];
-   $images = implode(",", $_FILES['image']['name']);
-  DB::query('INSERT INTO image VALUES ( :id , :images , :texts ,  NOW() )' , array( ':id'=>$id,':images'=>$images, ':texts'=>$texts));
- foreach ($image as $key => $value) {
-  $location = "image/".basename($image[$key]);
-  move_uploaded_file($_FILES['image']['tmp_name'][$key] , $location); 
- }
+   $count = count($image);
+   for ($i=0; $i < $count; $i++) { 
+       $rename[$i] = "Image_".str_shuffle(time()."eoiildklkiwoerfiwpdxckc").".jpg";
+    }
+  foreach ($image as  $key => $value) {       
+     $images = $image[$key];   
+     move_uploaded_file($_FILES['files']['tmp_name'][$key] , $fileLocation.$rename[$key]);
+     $imploded = implode("," , $rename);
+     global $rename;
+   }
+  DB::query('INSERT INTO image VALUES ( :id , :images , :texts ,  NOW() )' , array( ':id'=>$id,':images'=> $imploded, ':texts'=>$texts));
 }
 
 
